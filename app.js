@@ -1,8 +1,9 @@
 const inquirer = require('inquirer');
 const chalk = require('chalk');
+const fs = require('fs');
 
 // reading arguments from console
-const args = process.argv.slice(2);
+// const args = process.argv.slice(2);
 
 // old fashion inquirer version
 // inquirer.prompt(questions).then((answers) => {
@@ -42,34 +43,27 @@ const pwdQuestion = [
     },
 ];
 
-const pwdSafe = {
-    master: 'Maximus',
-    wifi: '123456',
-    puk: 'gambler',
-    home: 'nextTime',
-};
-
 
 //  helper functions
-async function validateAccess() {
+async function validateAccess(master) {
     const { masterPwd } = await inquirer.prompt(questions);
 
-    if (pwdSafe.master !== masterPwd) {
+    if (master !== masterPwd) {
         console.log(chalk.red(`Your Masterpassword is WRONG`));
         process.exit();
     }
 }
 
-async function findPassword(rounds) {
+async function findPassword(rounds, safe) {
     const { pwdQuery } = await inquirer.prompt(pwdQuestion);
 
-    if (!pwdSafe[pwdQuery]) {
+    if (!safe[pwdQuery]) {
         console.log(chalk.yellow(`Password not found (${rounds - 1} tries left)`));
-        rounds = rounds -1;
+        rounds--;
         return rounds;
     }
 
-    console.log(chalk.green(`Password found: ${pwdSafe[pwdQuery]}`));
+    console.log(chalk.green(`Password found: ${safe[pwdQuery]}`));
     process.exit();
 }
 
@@ -77,10 +71,22 @@ async function findPassword(rounds) {
 
 async function app() {
     console.log(`*** Password Manager 0.0.2 ***`);
-    await validateAccess();
+
+    let pwdSafe = null;
+
+    try {
+        pwdSafe = JSON.parse(fs.readFileSync("./db.json", "utf8"))
+    } catch (err) {
+        console.log(err)
+        return;
+    }
+
+    await validateAccess(pwdSafe.master);
+
     let rounds = 3;
+
     while (rounds > 0) {
-        rounds = await findPassword(rounds);
+        rounds = await findPassword(rounds, pwdSafe);
     }
 }
 
