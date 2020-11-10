@@ -1,6 +1,8 @@
 {
     "master": "Maximus",
-    "wifi": "123456",
-    "puk": "gambler",
-    "home": "nextTime"
+    "public": {
+        "wifi": "123456",
+        "puk": "gambler",
+        "home": "nextTime"
+    }
 }

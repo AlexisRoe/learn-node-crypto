@@ -23,9 +23,8 @@ const fs = require('fs');
 // });
 
 /*
-* 4. Promise in modern JS - await/async
-*/
-
+ * 4. Promise in modern JS - await/async
+ */
 
 //  helper functions
 async function validateAccess(master) {
@@ -64,19 +63,17 @@ async function findPassword(rounds, safe) {
     console.log(chalk.green(`Password found: ${safe[pwdQuery]}`));
 }
 
-
-
 // actual program code
 
 async function app() {
     console.log(`*** Password Manager 0.0.2 ***`);
 
     try {
-        const pwdSafe = JSON.parse(fs.readFileSync('./db.json', 'utf8'));
-        if (await validateAccess(pwdSafe.master)) {
+        const { master, public } = JSON.parse(fs.readFileSync('./db.json', 'utf8'));
+        if (await validateAccess(master)) {
             let rounds = 3;
             while (rounds > 0) {
-                rounds = await findPassword(rounds, pwdSafe);
+                rounds = await findPassword(rounds, public);
             }
         }
     } catch (err) {
