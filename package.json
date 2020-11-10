@@ -1,0 +1,25 @@
+{
+  "name": "learn-node-crypto",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Learning node.js and crypto",
+  "main": "app.js",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "inquirer": "^7.3.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexisRoe/learn-node-crypto.git"
+  },
+  "author": "Alexis Roehrling",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlexisRoe/learn-node-crypto/issues"
+  },
+  "homepage": "https://github.com/AlexisRoe/learn-node-crypto#readme"
+}
