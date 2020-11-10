@@ -22,30 +22,21 @@ const fs = require('fs');
 //     }
 // });
 
-// 4. Promise in modern JS - await/async
+/*
+* 4. Promise in modern JS - await/async
+*/
 
-// data storage
-
-const questions = [
-    {
-        type: 'password',
-        name: 'masterPwd',
-        message: '> Password\n>',
-        mask: true,
-    },
-];
-
-const pwdQuestion = [
-    {
-        type: 'string',
-        name: 'pwdQuery',
-        message: `Whats next, pussycat?\n>`,
-    },
-];
 
 //  helper functions
 async function validateAccess(master) {
-    const { masterPwd } = await inquirer.prompt(questions);
+    const { masterPwd } = await inquirer.prompt([
+        {
+            type: 'password',
+            name: 'masterPwd',
+            message: '> Masterpassword?\n>',
+            mask: true,
+        },
+    ]);
 
     if (master !== masterPwd) {
         console.log(chalk.red(`Your Masterpassword is WRONG`));
@@ -56,7 +47,13 @@ async function validateAccess(master) {
 }
 
 async function findPassword(rounds, safe) {
-    const { pwdQuery } = await inquirer.prompt(pwdQuestion);
+    const { pwdQuery } = await inquirer.prompt([
+        {
+            type: 'string',
+            name: 'pwdQuery',
+            message: `What password are you looking for?\n>`,
+        },
+    ]);
 
     if (!safe[pwdQuery]) {
         console.log(chalk.yellow(`Password not found (${rounds - 1} tries left)`));
@@ -66,6 +63,8 @@ async function findPassword(rounds, safe) {
 
     console.log(chalk.green(`Password found: ${safe[pwdQuery]}`));
 }
+
+
 
 // actual program code
 
@@ -89,4 +88,5 @@ async function app() {
     process.exit();
 }
 
+// Lets GO
 app();
