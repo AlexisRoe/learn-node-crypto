@@ -1,11 +1,13 @@
 const inquirer = require('inquirer');
 const chalk = require('chalk');
-const fs = require('fs');
+const fs = require('fs').promises;
 
-// reading arguments from console
-// const args = process.argv.slice(2);
 
-// old fashion inquirer version
+
+/*
+ * old fashion inquirer version
+ */
+
 // inquirer.prompt(questions).then((answers) => {
 //     if (answers.masterPwd === 'masterpwd') {
 //         console.log(chalk.green(`Your Masterpassword is CORRECT`));
@@ -22,9 +24,14 @@ const fs = require('fs');
 //     }
 // });
 
+
+
 /*
- * 4. Promise in modern JS - await/async
+ * Promise in modern JS - await/async
  */
+
+// reading arguments from console
+// const args = process.argv.slice(2);
 
 //  helper functions
 async function validateAccess(master) {
@@ -46,6 +53,11 @@ async function validateAccess(master) {
 }
 
 async function findPassword(rounds, safe) {
+
+    if (rounds <= 0) {
+        return;
+    }
+
     const { pwdQuery } = await inquirer.prompt([
         {
             type: 'string',
@@ -57,7 +69,8 @@ async function findPassword(rounds, safe) {
     if (!safe[pwdQuery]) {
         console.log(chalk.yellow(`Password not found (${rounds - 1} tries left)`));
         rounds--;
-        return rounds;
+        await findPassword(rounds, safe);
+        return;
     }
 
     console.log(chalk.green(`Password found: ${safe[pwdQuery]}`));
@@ -68,13 +81,12 @@ async function findPassword(rounds, safe) {
 async function app() {
     console.log(`*** Password Manager 0.0.2 ***`);
 
+    const master = "Maximus";
+
     try {
-        const { master, public } = JSON.parse(fs.readFileSync('./db.json', 'utf8'));
         if (await validateAccess(master)) {
-            let rounds = 3;
-            while (rounds > 0) {
-                rounds = await findPassword(rounds, public);
-            }
+            const { public } = await JSON.parse(fs.readFileSync('./db.json', 'utf8'));
+            await findPassword(3, public);
         }
     } catch (err) {
         console.log(err);
