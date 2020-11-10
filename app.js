@@ -69,7 +69,6 @@ async function app() {
     try {
         if (await validateAccess(master)) {
             const pwd = await JSON.parse(fs.readFileSync('./db.json', 'utf8'));
-            // await findPassword(3, public);
             const category = await chooseCategory(pwd);
             await showPasswords(category);
         }
