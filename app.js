@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const chalk = require('chalk');
+const { stringify } = require('querystring');
 
 // reading arguments from console
 const args = process.argv.slice(2);
@@ -34,11 +35,33 @@ const questions = [
     },
 ];
 
+const pwdQuestion = [
+    {
+        type: "string",
+        name: "pwdQuery",
+        message: "Whats next, pussycat?\n>"
+    }
+]
+
+const pwdSafe = {
+    wifi: "123456",
+    puk: "gambler",
+    home: "nextTime"
+}
+
 // 3. colorize output in console
 inquirer.prompt(questions).then((answers) => {
     if (answers.masterPwd === 'Maximus') {
         console.log(chalk.green(`Your Masterpassword is CORRECT`));
+        inquirer.prompt(pwdQuestion).then((answers) => {
+            if (pwdSafe[answers.pwdQuery]) {
+                console.log(`Password found: ${pwdSafe[answers.pwdQuery]}`)
+            } else {
+                console.log("Password not found.")
+            }
+        });
     } else {
         console.log(chalk.red(`Your Masterpassword is WRONG`));
+        process.exit();
     }
 });
