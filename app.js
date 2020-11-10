@@ -49,8 +49,10 @@ async function validateAccess(master) {
 
     if (master !== masterPwd) {
         console.log(chalk.red(`Your Masterpassword is WRONG`));
-        process.exit();
+        return false;
     }
+
+    return true;
 }
 
 async function findPassword(rounds, safe) {
@@ -72,10 +74,11 @@ async function app() {
 
     try {
         const pwdSafe = JSON.parse(fs.readFileSync('./db.json', 'utf8'));
-        await validateAccess(pwdSafe.master);
-        let rounds = 3;
-        while (rounds > 0) {
-            rounds = await findPassword(rounds, pwdSafe);
+        if (await validateAccess(pwdSafe.master)) {
+            let rounds = 3;
+            while (rounds > 0) {
+                rounds = await findPassword(rounds, pwdSafe);
+            }
         }
     } catch (err) {
         console.log(err);
