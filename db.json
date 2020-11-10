@@ -1,8 +1,28 @@
 {
-    "master": "Maximus",
-    "public": {
-        "wifi": "123456",
-        "puk": "gambler",
-        "home": "nextTime"
-    }
+     "wifi": 
+    [
+        {
+            "name": "home",
+            "key": "123456" 
+        },
+        {
+            "name": "work",
+            "key": "123456" 
+        },
+        {
+            "name": "Tante",
+            "key": "123456" 
+        }
+    ],
+    "homebanking": 
+    [
+        {
+            "name": "bank",
+            "key": "123456" 
+        },
+        {
+            "name": "creditcard",
+            "key": "123456" 
+        }
+    ]
 }

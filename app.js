@@ -1,8 +1,6 @@
 const inquirer = require('inquirer');
 const chalk = require('chalk');
-const fs = require('fs').promises;
-
-
+const fs = require('fs');
 
 /*
  * old fashion inquirer version
@@ -24,8 +22,6 @@ const fs = require('fs').promises;
 //     }
 // });
 
-
-
 /*
  * Promise in modern JS - await/async
  */
@@ -39,7 +35,7 @@ async function validateAccess(master) {
         {
             type: 'password',
             name: 'masterPwd',
-            message: '> Masterpassword?\n>',
+            message: chalk.yellow('Masterpassword?\n'),
             mask: true,
         },
     ]);
@@ -52,41 +48,84 @@ async function validateAccess(master) {
     return true;
 }
 
-async function findPassword(rounds, safe) {
+async function chooseCategory(safe) {
+    const choices = [];
 
-    if (rounds <= 0) {
-        return;
+    for (const key in safe) {
+        choices.push(key);
     }
 
-    const { pwdQuery } = await inquirer.prompt([
+    const { category } = await inquirer.prompt([
         {
-            type: 'string',
-            name: 'pwdQuery',
-            message: `What password are you looking for?\n>`,
+            type: 'list',
+            name: 'category',
+            message: chalk.yellow('Choose a category'),
+            choices: choices,
         },
     ]);
 
-    if (!safe[pwdQuery]) {
-        console.log(chalk.yellow(`Password not found (${rounds - 1} tries left)`));
-        rounds--;
-        await findPassword(rounds, safe);
-        return;
-    }
-
-    console.log(chalk.green(`Password found: ${safe[pwdQuery]}`));
+    return safe[category];
 }
+
+async function showPasswords(category) {
+    const choices = [];
+
+    category.forEach((element) => {
+        choices.push(element.name);
+    });
+
+    const { key } = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'key',
+            message: chalk.yellow(`Choose a property`),
+            choices: choices,
+        },
+    ]);
+
+    const index = choices.findIndex((element) => element === key);
+
+    console.log(chalk.green(`name: ${category[index].name}\nkey: ${category[index].key}`));
+}
+
+// finding passwords with rounds
+// async function findPassword(rounds, safe) {
+
+//     if (rounds <= 0) {
+//         return;
+//     }
+
+//     const { pwdQuery } = await inquirer.prompt([
+//         {
+//             type: 'string',
+//             name: 'pwdQuery',
+//             message: `What password are you looking for?\n>`,
+//         },
+//     ]);
+
+//     if (!safe[pwdQuery]) {
+//         console.log(chalk.yellow(`Password not found (${rounds - 1} tries left)`));
+//         rounds--;
+//         await findPassword(rounds, safe);
+//         return;
+//     }
+
+//     console.log(chalk.green(`Password found: ${safe[pwdQuery]}`));
+// }
 
 // actual program code
 
 async function app() {
     console.log(`*** Password Manager 0.0.2 ***`);
 
-    const master = "Maximus";
+    const master = '0000';
 
     try {
         if (await validateAccess(master)) {
-            const { public } = await JSON.parse(fs.readFileSync('./db.json', 'utf8'));
-            await findPassword(3, public);
+            const pwd = await JSON.parse(fs.readFileSync('./db.json', 'utf8'));
+            // await findPassword(3, public);
+            const category = await chooseCategory(pwd);
+            await showPasswords(category);
         }
     } catch (err) {
         console.log(err);
