@@ -43,7 +43,6 @@ const pwdQuestion = [
     },
 ];
 
-
 //  helper functions
 async function validateAccess(master) {
     const { masterPwd } = await inquirer.prompt(questions);
@@ -64,7 +63,6 @@ async function findPassword(rounds, safe) {
     }
 
     console.log(chalk.green(`Password found: ${safe[pwdQuery]}`));
-    process.exit();
 }
 
 // actual program code
@@ -72,22 +70,20 @@ async function findPassword(rounds, safe) {
 async function app() {
     console.log(`*** Password Manager 0.0.2 ***`);
 
-    let pwdSafe = null;
-
     try {
-        pwdSafe = JSON.parse(fs.readFileSync("./db.json", "utf8"))
+        const pwdSafe = JSON.parse(fs.readFileSync('./db.json', 'utf8'));
+        await validateAccess(pwdSafe.master);
+        let rounds = 3;
+        while (rounds > 0) {
+            rounds = await findPassword(rounds, pwdSafe);
+        }
     } catch (err) {
-        console.log(err)
+        console.log(err);
         return;
     }
 
-    await validateAccess(pwdSafe.master);
-
-    let rounds = 3;
-
-    while (rounds > 0) {
-        rounds = await findPassword(rounds, pwdSafe);
-    }
+    console.log(`*** Good Bye ****`);
+    process.exit();
 }
 
 app();
