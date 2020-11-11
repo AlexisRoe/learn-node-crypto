@@ -1,28 +1,15 @@
 {
-     "wifi": 
-    [
-        {
-            "name": "home",
-            "key": "123456" 
-        },
-        {
-            "name": "work",
-            "key": "123456" 
-        },
-        {
-            "name": "Tante",
-            "key": "123456" 
-        }
-    ],
-    "homebanking": 
-    [
-        {
-            "name": "bank",
-            "key": "123456" 
-        },
-        {
-            "name": "creditcard",
-            "key": "123456" 
-        }
-    ]
+  "master": "0000",
+  "public": {
+    "wifi": {
+      "home": "dfgsdfg",
+      "work": "123456",
+      "Tante": "123456",
+      "dsf": "sfs"
+    },
+    "homebanking": {
+      "bank": "123456",
+      "creditcard": "123456"
+    }
+  }
 }
