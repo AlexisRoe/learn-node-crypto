@@ -1,16 +1,14 @@
 {
   "master": "rVXFrk+LldqJsDtU30Zc4Q==",
   "public": {
-      "wifi": 
-      {
-        "home": "dfgsdfg",
-        "work": "123456",
-        "Tante": "123456"
-      },
-      "homebanking": 
-      {
-        "bank": "123456",
-        "creditcard": "123456"
-      }
+    "wifi": {
+      "home": "U2FsdGVkX1+7hbj5RIah9LXes8cr48Cm8YrqIrPgMfE=",
+      "work": "U2FsdGVkX1+7hbj5RIah9LXes8cr48Cm8YrqIrPgMfE=",
+      "Tante": "U2FsdGVkX1+7hbj5RIah9LXes8cr48Cm8YrqIrPgMfE="
+    },
+    "homebanking": {
+      "bank": "U2FsdGVkX1+7hbj5RIah9LXes8cr48Cm8YrqIrPgMfE=",
+      "creditcard": "U2FsdGVkX1+7hbj5RIah9LXes8cr48Cm8YrqIrPgMfE="
+    }
   }
 }

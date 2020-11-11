@@ -15,10 +15,10 @@ async function run() {
 
     if (await isValidateAccess(master)) {
         if (args[0] === 'set' || args[0] === '-s') {
-            const newSet = await createNewSet(safe);
+            const newSet = await createNewSet(safe, master);
             await setData(file, newSet);
         } else {
-            await showPasswordSafe(data);
+            await showPasswordSafe(data, master);
         }
     }
 
