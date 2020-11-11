@@ -1,15 +1,16 @@
 {
-  "master": "0000",
+  "master": "rVXFrk+LldqJsDtU30Zc4Q==",
   "public": {
-    "wifi": {
-      "home": "dfgsdfg",
-      "work": "123456",
-      "Tante": "123456",
-      "dsf": "sfs"
-    },
-    "homebanking": {
-      "bank": "123456",
-      "creditcard": "123456"
-    }
+      "wifi": 
+      {
+        "home": "dfgsdfg",
+        "work": "123456",
+        "Tante": "123456"
+      },
+      "homebanking": 
+      {
+        "bank": "123456",
+        "creditcard": "123456"
+      }
   }
 }
