@@ -8,18 +8,30 @@ const { validateParams } = require('./lib/validateparams');
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 
+// Connection URL
+const url =
+    'mongodb+srv://alexis:FQYi8E2EKNiznjJr@cluster0.nqjuk.mongodb.net/learn-crypto?retryWrites=true';
+
+// Use connect method to connect to the Server
+MongoClient.connect(url, function (err, client) {
+    assert.equal(null, err);
+    const db = client.db('test');
+
+    db.collection('inventory')
+        .insertOne({
+            item: 'canvas',
+            qty: 100,
+            tags: ['cotton'],
+            size: { h: 28, w: 35.5, uom: 'cm' },
+        })
+        .then(function (result) {
+            // console.log(result);
+        });
+
+    client.close();
+});
+
 async function run() {
-    // Connection URL
-    const url =
-        'mongodb+srv://alexis:$FQYi8E2EKNiznjJr@cluster0.nqjuk.mongodb.net/learn-crypto?retryWrites=true';
-
-    // Use connect method to connect to the Server
-    MongoClient.connect(url, function (err, client) {
-        assert.equal(null, err);
-        client.close();
-    });
-
-    // my app until 15:30 ;-)
     console.log(`*** Password Manager 0.0.2 ***`);
 
     const file = './db.json';
@@ -45,4 +57,5 @@ async function run() {
     process.exit();
 }
 
-run();
+console.log(chalk.red('Neeee die App läuft gerade nicht, 😋'));
+// run();
