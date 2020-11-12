@@ -1,4 +1,4 @@
-const { getData, setData } = require('./lib/filehandler');
+const { getData, setData, readMasterPwd } = require('./lib/filehandler');
 const { isValidateAccess } = require('./lib/validateaccess');
 const { showPasswordSafe } = require('./lib/showsafe');
 const { createNewSet } = require('./lib/createset');
@@ -10,10 +10,12 @@ async function run() {
     const file = './db.json';
     const instructions = await validateParams(process.argv);
 
-    const safe = await getData(file);
-    const { master, public: data } = safe;
+    const master = await readMasterPwd();
 
     if (await isValidateAccess(master)) {
+        const safe = await getData(file);
+        const { public: data } = safe;
+        
         if (instructions.write) {
             const newSet = await createNewSet(safe, master);
             await setData(file, newSet);
