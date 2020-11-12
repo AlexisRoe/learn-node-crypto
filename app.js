@@ -1,23 +1,23 @@
-const { getData, setData } = require("./lib/filehandler");
-const { isValidateAccess } = require("./lib/validateaccess");
-const { showPasswordSafe } = require("./lib/showsafe");
-const { createNewSet } = require("./lib/createset");
-
+const { getData, setData } = require('./lib/filehandler');
+const { isValidateAccess } = require('./lib/validateaccess');
+const { showPasswordSafe } = require('./lib/showsafe');
+const { createNewSet } = require('./lib/createset');
+const { validateParams } = require('./lib/validateparams');
 
 async function run() {
     console.log(`*** Password Manager 0.0.2 ***`);
 
     const file = './db.json';
+    const instructions = await validateParams(process.argv);
 
-    const args = process.argv.slice(2);
     const safe = await getData(file);
     const { master, public: data } = safe;
 
     if (await isValidateAccess(master)) {
-        if (args[0] === 'set' || args[0] === '-s') {
+        if (instructions.write) {
             const newSet = await createNewSet(safe, master);
             await setData(file, newSet);
-        } else {
+        } else if (instructions.readonly) {
             await showPasswordSafe(data, master);
         }
     }
