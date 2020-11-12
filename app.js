@@ -20,6 +20,8 @@ async function run() {
         } else if (instructions.readonly) {
             await showPasswordSafe(data, master);
         }
+    } else {
+        console.log(chalk.red(`Your Masterpassword is WRONG`));
     }
 
     console.log(`*** Good Bye ****`);
