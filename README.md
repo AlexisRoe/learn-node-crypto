@@ -33,8 +33,8 @@ for hashing masterpassword and de/encrypt data <br />
 
 ## DISCLAIMER
 
-Yes, the ~~db.json~~ and the ~~.masterpwd~~ are not belonging on github. Its just for learning purposes. It should be ignored with `.gitignore`.
-(AlexisRoe@8673be9f35f2e0c94fa0c16bd020cbc8f05afd8e)
+Yes, the ~~db.json~~ and the ~~.masterpwd~~ are not belonging on github. Its just for learning purposes. It should be ignored with `.gitignore`.<br/>
+https://github.com/AlexisRoe/learn-node-crypto/commit/8673be9f35f2e0c94fa0c16bd020cbc8f05afd8e
 
 ### db.json
 
