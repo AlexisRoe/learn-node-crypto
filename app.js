@@ -4,7 +4,7 @@ const { showPasswordSafe } = require('./lib/showsafe');
 const { createNewSet } = require('./lib/createset');
 const { validateParams } = require('./lib/validateparams');
 // const { createCategoryList } = require('./lib/createcategorylist');
-// const { showCategories } = require('./lib/askuser');
+const { showOptions } = require('./lib/askuser');
 const { connect, close: closeConnection, collection } = require('./lib/database');
 
 const chalk = require('chalk');
@@ -19,9 +19,10 @@ async function run() {
         console.log(chalk.grey('Connecting to database ...'));
         await connect(process.env.DB_URL, 'learn-crypto');
         console.log(chalk.grey('Connected to database'));
+        closeConnection();
 
         const file = './db.json';
-        const instructions = await validateParams(process.argv);
+        let instructions = await validateParams(process.argv.slice(2));
 
         const safe = await getData(file);
         const { public: data } = safe;
@@ -30,12 +31,27 @@ async function run() {
             const menu = 
             [
                 {
-                    
-                }
+                    name: "read database",
+                    value: ["-r"]
+                },
+                {
+                    name: "change entry",
+                    value: ["-w"]
+                },
+                {
+                    name: "create new entry",
+                    value: ["-n"]
+                },
+                {
+                    name: "delete entry",
+                    value: ["-d"]
+                },
             ]
 
-
-            const choice = showCategories(["read database", "write da"])
+            const choice = await showOptions(menu, "Choose a operation");
+            instructions = await validateParams(choice);
+            console.log(instructions);
+            return ("finish here");
         }
 
         // read in all data from database
@@ -43,7 +59,7 @@ async function run() {
         // create category list
         // const choices = createCategoryList(collection);
         // show them to the users
-        // const choiceUser = showCategories(choices);
+        // const choiceUser = showOptions(choices, `Choose a category from below for continuing`);
 
         if (instructions.write) {
             // update it in database
