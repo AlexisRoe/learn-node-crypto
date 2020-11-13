@@ -1,65 +1,64 @@
+require('dotenv').config();
+const chalk = require('chalk');
+
 const { getData, setData, readMasterPwd } = require('./lib/filehandler');
 const { isValidateAccess } = require('./lib/validateaccess');
 const { showPasswordSafe } = require('./lib/showsafe');
 const { createNewSet } = require('./lib/createset');
 const { validateParams } = require('./lib/validateparams');
-// const { createCategoryList } = require('./lib/createcategorylist');
+const { createCategoryList } = require('./lib/createcategorylist');
 const { showOptions } = require('./lib/askuser');
-const { connect, close: closeConnection, collection } = require('./lib/database');
-
-const chalk = require('chalk');
-const { showCategories } = require('./lib/askuser');
-require('dotenv').config();
+const { connect, close: closeConnection, find, collection } = require('./lib/database');
 
 async function run() {
     console.log(`*** Password Manager 0.0.2 ***`);
     const master = process.env.MASTER_PWD;
-
     if (await isValidateAccess(master)) {
         console.log(chalk.grey('Connecting to database ...'));
         await connect(process.env.DB_URL, 'learn-crypto');
-        console.log(chalk.grey('Connected to database'));
-        closeConnection();
 
-        const file = './db.json';
         let instructions = await validateParams(process.argv.slice(2));
-
-        const safe = await getData(file);
-        const { public: data } = safe;
-
         if (instructions.menu) {
-            const menu = 
-            [
+            const menu = [
                 {
-                    name: "read database",
-                    value: ["-r"]
+                    name: 'read database',
+                    value: ['-r'],
                 },
                 {
-                    name: "change entry",
-                    value: ["-w"]
+                    name: 'change entry',
+                    value: ['-w'],
                 },
                 {
-                    name: "create new entry",
-                    value: ["-n"]
+                    name: 'create new entry',
+                    value: ['-n'],
                 },
                 {
-                    name: "delete entry",
-                    value: ["-d"]
+                    name: 'delete entry',
+                    value: ['-d'],
                 },
-            ]
+            ];
 
-            const choice = await showOptions(menu, "Choose a operation");
+            const choice = await showOptions(menu, 'Choose a operation');
             instructions = await validateParams(choice);
-            console.log(instructions);
-            return ("finish here");
         }
 
-        // read in all data from database
+        // const safe = await getData(file);
+        // const { public: data } = safe;
 
-        // create category list
-        // const choices = createCategoryList(collection);
-        // show them to the users
-        // const choiceUser = showOptions(choices, `Choose a category from below for continuing`);
+        const existingCategories = await find('passwords', { category: { $exists: true } });
+        console.log(existingCategories);
+        closeConnection();
+        return
+
+        const categories = createCategoryList(existingCategories);
+        const choiceUser = await showOptions(
+            categories,
+            `Choose a category from below for continuing`
+        );
+
+        console.log(choiceUser);
+
+        return 'stop here for now';
 
         if (instructions.write) {
             // update it in database
