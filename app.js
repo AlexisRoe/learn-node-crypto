@@ -2,27 +2,28 @@ require('dotenv').config();
 const chalk = require('chalk');
 
 const { isValidateAccess, validateParams } = require('./lib/validation');
-const { createCategoryList } = require('./lib/createlist');
-const { showOptions, askUser } = require('./lib/askuser');
+const { showOptions, askUser, choosePassword } = require('./lib/askuser');
+const { createCategoryList } = require('./lib/createlists');
 const { encrypt, decryptPwd } = require('./lib/crypto');
 const {
     connect,
     close: closeConnection,
     find,
     insertNewDocument,
-    deleteDocument,
     changeDocument,
+    deleteDocument,
 } = require('./lib/database');
-const { choosePassword } = require('./lib/choosepassword');
 
 async function run() {
     console.log(`*** Password Manager 0.0.2 ***`);
+
     const master = process.env.MASTER_PWD;
     if (await isValidateAccess(master)) {
         console.log(chalk.grey('Connecting to database ...'));
         await connect(process.env.DB_URL, process.env.DB_NAME);
 
         let instructions = await validateParams(process.argv.slice(2));
+
         if (instructions.menu) {
             const menu = [
                 {
@@ -55,7 +56,9 @@ async function run() {
         if (instructions.write) {
             const passwordID = await choosePassword(categories);
             const newPassword = await askUser(`Whats the new Password?\n`);
-            await changeDocument(process.env.DB_COLLECTION, passwordID, newPassword);
+            const encryptedPassword = encrypt(newPassword, master);
+            await changeDocument(process.env.DB_COLLECTION, passwordID, encryptedPassword);
+
             console.log(chalk.green(`Password changed`));
         } else if (instructions.read) {
             const passwordID = await choosePassword(categories);
