@@ -2,7 +2,7 @@ require('dotenv').config();
 const chalk = require('chalk');
 
 const { isValidateAccess, validateParams } = require('./lib/validation');
-const { createPasswordList, createCategoryList } = require('./lib/createlist');
+const { createCategoryList } = require('./lib/createlist');
 const { showOptions, askUser } = require('./lib/askuser');
 const { encrypt, decryptPwd } = require('./lib/crypto');
 const {
@@ -13,6 +13,7 @@ const {
     deleteDocument,
     changeDocument,
 } = require('./lib/database');
+const { choosePassword } = require('./lib/choosepassword');
 
 async function run() {
     console.log(`*** Password Manager 0.0.2 ***`);
@@ -52,29 +53,12 @@ async function run() {
         const categories = createCategoryList(existingCategories);
 
         if (instructions.write) {
-            const choosenCategory = await showOptions(
-                categories,
-                `Choose a category from below for continuing`
-            );
-
-            const documents = await find(process.env.DB_COLLECTION, { category: choosenCategory });
-            const choices = await createPasswordList(documents);
-            const passwordID = await showOptions(choices, 'Choose a password.');
-
+            const passwordID = await choosePassword(categories);
             const newPassword = await askUser(`Whats the new Password?\n`);
-
             await changeDocument(process.env.DB_COLLECTION, passwordID, newPassword);
             console.log(chalk.green(`Password changed`));
         } else if (instructions.read) {
-            const choosenCategory = await showOptions(
-                categories,
-                `Choose a category from below for continuing`
-            );
-
-            const documents = await find(process.env.DB_COLLECTION, { category: choosenCategory });
-            const choices = await createPasswordList(documents);
-            const passwordID = await showOptions(choices, 'Choose a password.');
-
+            const passwordID = await choosePassword(categories);
             const passwordDocument = await find(process.env.DB_COLLECTION, {
                 _id: passwordID,
             });
@@ -108,15 +92,7 @@ async function run() {
             await insertNewDocument(process.env.DB_COLLECTION, newDocument);
             console.log(chalk.green(`new Passwort successfully stored`));
         } else if (instructions.delete) {
-            const choosenCategory = await showOptions(
-                categories,
-                `Choose a category from below for continuing`
-            );
-
-            const documents = await find(process.env.DB_COLLECTION, { category: choosenCategory });
-            const choices = await createPasswordList(documents);
-            const passwordID = await showOptions(choices, 'Choose a password.');
-
+            const passwordID = await choosePassword(categories);
             await deleteDocument(process.env.DB_COLLECTION, { _id: passwordID });
             console.log(chalk.green(`Password deleted`));
         }
