@@ -7,15 +7,15 @@ const { showPasswordSafe } = require('./lib/showsafe');
 const { createNewSet } = require('./lib/createset');
 const { validateParams } = require('./lib/validateparams');
 const { createCategoryList } = require('./lib/createcategorylist');
-const { showOptions } = require('./lib/askuser');
-const { connect, close: closeConnection, find, collection } = require('./lib/database');
+const { showOptions, askUser } = require('./lib/askuser');
+const { connect, close: closeConnection, find, insertNewDocument } = require('./lib/database');
 
 async function run() {
     console.log(`*** Password Manager 0.0.2 ***`);
     const master = process.env.MASTER_PWD;
     if (await isValidateAccess(master)) {
         console.log(chalk.grey('Connecting to database ...'));
-        await connect(process.env.DB_URL, 'learn-crypto');
+        await connect(process.env.DB_URL, process.env.DB_NAME);
 
         let instructions = await validateParams(process.argv.slice(2));
         if (instructions.menu) {
@@ -42,31 +42,61 @@ async function run() {
             instructions = await validateParams(choice);
         }
 
-        // const safe = await getData(file);
-        // const { public: data } = safe;
-
-        const existingCategories = await find('passwords', { category: { $exists: true } });
+        const existingCategories = await find(process.env.DB_COLLECTION, {
+            category: { $exists: true },
+        });
         const categories = createCategoryList(existingCategories);
-        const choiceUser = await showOptions(
-            categories,
-            `Choose a category from below for continuing`
-        );
-
-        console.log(choiceUser);
-        closeConnection();
-        return 'stop here for now';
 
         if (instructions.write) {
+            const choosenCategory = await showOptions(
+                categories,
+                `Choose a category from below for continuing`
+            );
+            console.log('changing data');
             // update it in database
-            const newSet = await createNewSet(safe, master);
-            await setData(file, newSet);
+            // const newSet = await createNewSet(safe, master);
+            // await setData(file, newSet);
         } else if (instructions.read) {
-            await showPasswordSafe(data, master);
+            const choosenCategory = await showOptions(
+                categories,
+                `Choose a category from below for continuing`
+            );
+
+            const documents = await find(process.env.DB_COLLECTION, { category: choosenCategory});
+            const choices = await createPasswordList(documents);
+            const choosenPassword = await showOptions(passwords, "Choose a password.");
+
         } else if (instructions.new) {
-            // add +new category to available category list
-            // ask for all name and value
-            // write it to database
+            const expandCategories = [...categories, '+ New Category'];
+            const choosenCategory = await showOptions(
+                expandCategories,
+                `Choose a category from below for continuing`
+            );
+
+            const newItem = {
+                name: '',
+                category: choosenCategory,
+                value: '',
+            };
+
+            if (choosenCategory === '+ New Category') {
+                const newCategory = await askUser(`Whats the name of the new category?\n`);
+                newItem.category = newCategory;
+            }
+
+            newItem.name = await askUser(`What is the key/name to be stored?\n`);
+            const rawValue = await askUser(`What is the password to be stored?\n`);
+            newItem.value = encrypt(rawValue, master);
+
+            await insertNewDocument(process.env.DB_COLLECTION, newItem);
+            console.log(chalk.green(`new Passwort successfully stored`));
+
         } else if (instructions.delete) {
+            const choosenCategory = await showOptions(
+                categories,
+                `Choose a category from below for continuing`
+            );
+            console.log('delete data');
             // take a choice of user
             // delete in database
         }
