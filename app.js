@@ -2,8 +2,7 @@ require('dotenv').config();
 const chalk = require('chalk');
 
 const { isValidateAccess, validateParams } = require('./lib/validation');
-const { createCategoryList } = require('./lib/createcategorylist');
-const { createPasswordList } = require('./lib/createpasswordlist');
+const { createPasswordList, createCategoryList } = require('./lib/createlist');
 const { showOptions, askUser } = require('./lib/askuser');
 const { encrypt, decryptPwd } = require('./lib/crypto');
 const {
@@ -12,7 +11,7 @@ const {
     find,
     insertNewDocument,
     deleteDocument,
-    changeDocument
+    changeDocument,
 } = require('./lib/database');
 
 async function run() {
@@ -66,7 +65,6 @@ async function run() {
 
             await changeDocument(process.env.DB_COLLECTION, passwordID, newPassword);
             console.log(chalk.green(`Password changed`));
-            
         } else if (instructions.read) {
             const choosenCategory = await showOptions(
                 categories,
