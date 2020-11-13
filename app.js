@@ -96,12 +96,29 @@ async function run() {
         const safe = await getData(file);
         const { public: data } = safe;
 
+        if (instructions.menu) {
+            // show menu and rewrite instructions object
+        }
+
+        // read in all data from database
+
+        // create category list
+
         if (instructions.write) {
+            // update it in database
             const newSet = await createNewSet(safe, master);
             await setData(file, newSet);
-        } else if (instructions.readonly) {
+        } else if (instructions.read) {
             await showPasswordSafe(data, master);
+        } else if (instructions.new) {
+            // add +new category to available category list
+            // ask for all name and value
+            // write it to database
+        } else if (instructions.delete) {
+            // take a choice of user
+            // delete in database
         }
+
     } else {
         console.log(chalk.red(`Your Masterpassword is WRONG`));
     }

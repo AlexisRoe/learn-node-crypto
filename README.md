@@ -30,13 +30,39 @@ for communication with users over console. Make it easier to write prompts and h
 for hashing masterpassword and de/encrypt data <br />
 [CryptoJS on Github](https://github.com/brix/crypto-js)
 
+## Using .env
 
-## DISCLAIMER
+for hiding url key and encrypted master key <br />
+[dotenv auf npm](https://www.npmjs.com/package/dotenv)
 
-Yes, the ~~db.json~~ and the ~~.masterpwd~~ are not belonging on github. Its just for learning purposes. It should be ignored with `.gitignore`.<br/>
-https://github.com/AlexisRoe/learn-node-crypto/commit/8673be9f35f2e0c94fa0c16bd020cbc8f05afd8e
+````js
+const db = require('db')
+db.connect({
+  host: process.env.DB_HOST,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASS
+})
+````
 
-### db.json
+## Using MongoDB Atlas (Cloud)
+
+for storing data in documents/collections. Learning to handle CRUD operations [MongoDB Free Atlas Account](https://www.mongodb.com/)
+
+Dataformat
+````json
+{
+  "_id":  
+  {
+    "$oid":"5fad42cc889183e5bf79b625"
+  },
+  "name":"home",
+  "category":"wifi",
+  "value":"U2FsdGVkX1+7hbj5RIah9LXes8cr48Cm8YrqIrPgMfE="
+}
+````
+
+
+### db.json ursprünglich
 
 ````json
 {
