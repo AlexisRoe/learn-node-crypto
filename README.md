@@ -8,11 +8,11 @@ using this tool *to read passwords* is easy.
 3. choosing a password to be shown
 4. thats it
 
-you can also *write new ones or change old ones*
+you can also change existing passwords, delete them or create new ones
 
 1. starting with ` node app.js -s `
 2. typing the Masterpassword
-3. than answering the questions in order (you have to know the exiting ones to overwrite them, should be fixed 😉)
+3. just follow the instructions in screen 😉
    
 
 ## Using chalk
@@ -35,6 +35,7 @@ for hashing masterpassword and de/encrypt data <br />
 for hiding url key and encrypted master key <br />
 [dotenv auf npm](https://www.npmjs.com/package/dotenv)
 
+example
 ````js
 const db = require('db')
 db.connect({
@@ -42,6 +43,13 @@ db.connect({
   username: process.env.DB_USER,
   password: process.env.DB_PASS
 })
+````
+values in .env file
+````
+DB_URL=**********
+DB_NAME=**********
+DB_COLLECTION=passwords
+MASTER_PWD=**********
 ````
 
 ## Using MongoDB Atlas (Cloud)
