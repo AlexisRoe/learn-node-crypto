@@ -2,14 +2,19 @@ require('dotenv').config();
 const chalk = require('chalk');
 
 const { isValidateAccess } = require('./lib/validateaccess');
-const { showPasswordSafe } = require('./lib/showsafe');
-const { createNewSet } = require('./lib/createset');
 const { validateParams } = require('./lib/validateparams');
 const { createCategoryList } = require('./lib/createcategorylist');
 const { createPasswordList } = require('./lib/createpasswordlist');
 const { showOptions, askUser } = require('./lib/askuser');
 const { encrypt, decryptPwd } = require('./lib/crypto');
-const { connect, close: closeConnection, find, insertNewDocument } = require('./lib/database');
+const {
+    connect,
+    close: closeConnection,
+    find,
+    insertNewDocument,
+    deleteDocument,
+    changeDocument
+} = require('./lib/database');
 
 async function run() {
     console.log(`*** Password Manager 0.0.2 ***`);
@@ -53,10 +58,16 @@ async function run() {
                 categories,
                 `Choose a category from below for continuing`
             );
-            console.log('changing data');
-            // update it in database
-            // const newSet = await createNewSet(safe, master);
-            // await setData(file, newSet);
+
+            const documents = await find(process.env.DB_COLLECTION, { category: choosenCategory });
+            const choices = await createPasswordList(documents);
+            const passwordID = await showOptions(choices, 'Choose a password.');
+
+            const newPassword = await askUser(`Whats the new Password?\n`);
+
+            await changeDocument(process.env.DB_COLLECTION, passwordID, newPassword);
+            console.log(chalk.green(`Password changed`));
+            
         } else if (instructions.read) {
             const choosenCategory = await showOptions(
                 categories,
@@ -84,29 +95,33 @@ async function run() {
                 `Choose a category from below for continuing`
             );
 
-            const newItem = {
+            const newDocument = {
                 category: choosenCategory,
             };
 
             if (choosenCategory === '+ New Category') {
                 const newCategory = await askUser(`Whats the name of the new category?\n`);
-                newItem.category = newCategory;
+                newDocument.category = newCategory;
             }
 
-            newItem.name = await askUser(`What is the key/name to be stored?\n`);
+            newDocument.name = await askUser(`What is the key/name to be stored?\n`);
             const rawValue = await askUser(`What is the password to be stored?\n`);
-            newItem.value = encrypt(rawValue, master);
+            newDocument.value = encrypt(rawValue, master);
 
-            insertNewDocument(process.env.DB_COLLECTION, newItem);
+            await insertNewDocument(process.env.DB_COLLECTION, newDocument);
             console.log(chalk.green(`new Passwort successfully stored`));
         } else if (instructions.delete) {
             const choosenCategory = await showOptions(
                 categories,
                 `Choose a category from below for continuing`
             );
-            console.log('delete data');
-            // take a choice of user
-            // delete in database
+
+            const documents = await find(process.env.DB_COLLECTION, { category: choosenCategory });
+            const choices = await createPasswordList(documents);
+            const passwordID = await showOptions(choices, 'Choose a password.');
+
+            await deleteDocument(process.env.DB_COLLECTION, { _id: passwordID });
+            console.log(chalk.green(`Password deleted`));
         }
     } else {
         console.log(chalk.red(`Your Masterpassword is WRONG`));
