@@ -1,13 +1,14 @@
 require('dotenv').config();
 const chalk = require('chalk');
 
-const { getData, setData, readMasterPwd } = require('./lib/filehandler');
 const { isValidateAccess } = require('./lib/validateaccess');
 const { showPasswordSafe } = require('./lib/showsafe');
 const { createNewSet } = require('./lib/createset');
 const { validateParams } = require('./lib/validateparams');
 const { createCategoryList } = require('./lib/createcategorylist');
+const { createPasswordList } = require('./lib/createpasswordlist');
 const { showOptions, askUser } = require('./lib/askuser');
+const { encrypt, decryptPwd } = require('./lib/crypto');
 const { connect, close: closeConnection, find, insertNewDocument } = require('./lib/database');
 
 async function run() {
@@ -62,10 +63,20 @@ async function run() {
                 `Choose a category from below for continuing`
             );
 
-            const documents = await find(process.env.DB_COLLECTION, { category: choosenCategory});
+            const documents = await find(process.env.DB_COLLECTION, { category: choosenCategory });
             const choices = await createPasswordList(documents);
-            const choosenPassword = await showOptions(passwords, "Choose a password.");
+            const passwordID = await showOptions(choices, 'Choose a password.');
 
+            const passwordDocument = await find(process.env.DB_COLLECTION, {
+                _id: passwordID,
+            });
+
+            console.log(
+                `name: ${passwordDocument[0].name}\nkey: ${decryptPwd(
+                    passwordDocument[0].value,
+                    master
+                )}\n`
+            );
         } else if (instructions.new) {
             const expandCategories = [...categories, '+ New Category'];
             const choosenCategory = await showOptions(
@@ -74,9 +85,7 @@ async function run() {
             );
 
             const newItem = {
-                name: '',
                 category: choosenCategory,
-                value: '',
             };
 
             if (choosenCategory === '+ New Category') {
@@ -88,9 +97,8 @@ async function run() {
             const rawValue = await askUser(`What is the password to be stored?\n`);
             newItem.value = encrypt(rawValue, master);
 
-            await insertNewDocument(process.env.DB_COLLECTION, newItem);
+            insertNewDocument(process.env.DB_COLLECTION, newItem);
             console.log(chalk.green(`new Passwort successfully stored`));
-
         } else if (instructions.delete) {
             const choosenCategory = await showOptions(
                 categories,
