@@ -46,10 +46,6 @@ async function run() {
         // const { public: data } = safe;
 
         const existingCategories = await find('passwords', { category: { $exists: true } });
-        console.log(existingCategories);
-        closeConnection();
-        return
-
         const categories = createCategoryList(existingCategories);
         const choiceUser = await showOptions(
             categories,
@@ -57,7 +53,7 @@ async function run() {
         );
 
         console.log(choiceUser);
-
+        closeConnection();
         return 'stop here for now';
 
         if (instructions.write) {
