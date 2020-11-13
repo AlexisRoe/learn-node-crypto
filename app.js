@@ -1,8 +1,7 @@
 require('dotenv').config();
 const chalk = require('chalk');
 
-const { isValidateAccess } = require('./lib/validateaccess');
-const { validateParams } = require('./lib/validateparams');
+const { isValidateAccess, validateParams } = require('./lib/validation');
 const { createCategoryList } = require('./lib/createcategorylist');
 const { createPasswordList } = require('./lib/createpasswordlist');
 const { showOptions, askUser } = require('./lib/askuser');
