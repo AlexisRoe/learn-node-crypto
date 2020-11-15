@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { showCategories } = require('./category');
+const { showCategories } = require('./Category');
 const { aggregate } = require('../lib/database');
 const { createPasswordList } = require('../lib/createlists');
 const { showOptions } = require('../lib/askuser');
