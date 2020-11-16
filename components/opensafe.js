@@ -1,4 +1,3 @@
-require('dotenv').config();
 const chalk = require('chalk');
 const { askforPasswordtoChoose } = require('./SelectPassword');
 const { createSearchList } = require('../lib/createlists');

@@ -1,4 +1,3 @@
-require('dotenv').config();
 const { showCategories } = require('./Category');
 const { aggregate } = require('../lib/database');
 const { createPasswordList } = require('../lib/createlists');

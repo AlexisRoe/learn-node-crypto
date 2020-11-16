@@ -1,4 +1,3 @@
-require('dotenv').config();
 const chalk = require('chalk');
 const { decryptPwd } = require('../lib/crypto');
 const { aggregate } = require('../lib/database');

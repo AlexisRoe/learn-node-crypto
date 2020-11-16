@@ -1,4 +1,3 @@
-require('dotenv').config();
 const { aggregate } = require('../lib/database');
 const { showOptions, askUser } = require('../lib/askuser');
 
