@@ -20,9 +20,13 @@ async function passwordSafe() {
         const regex = new RegExp(`.*${userSearch}.*`, 'ig');
         const query = { $or: [{ category: { $in: [regex] } }, { name: { $in: [regex] } }] };
         const documents = await find(process.env.DB_COLLECTION, query);
-        const choices = createSearchList(documents);
-        const passwordID = await showOptions(choices, `Choose a password from search results`);
-        await showPassword(passwordID);
+        if (documents[0] === null) {
+            const choices = createSearchList(documents);
+            const passwordID = await showOptions(choices, `Choose a password from search results`);
+            await showPassword(passwordID);
+        } else {
+            console.log(chalk.red(`No password found. Good luck next time.`));
+        }
     } else if (instruction.read) {
         const passwordID = await askforPasswordtoChoose('Choose a password to display');
         await showPassword(passwordID);
