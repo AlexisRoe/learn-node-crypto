@@ -46,10 +46,10 @@ db.connect({
 ````
 values in .env file
 ````
-DB_URL=**********
-DB_NAME=**********
-DB_COLLECTION=passwords
-MASTER_PWD=**********
+DB_URL=  ***
+DB_NAME=  ***
+DB_COLLECTION= ***
+MASTER_PWD=  ***
 ````
 
 ## Using MongoDB Atlas (Cloud)
@@ -78,13 +78,13 @@ Dataformat
   "public": 
   {
       "wifi": {
-        "home": "U2FsdGVkX1+7hbj5RIah9LXes8cr48Cm8YrqIrPgMfE=",
-        "work": "U2FsdGVkX1+7hbj5RIah9LXes8cr48Cm8YrqIrPgMfE=",
-        "Tante": "U2FsdGVkX1+7hbj5RIah9LXes8cr48Cm8YrqIrPgMfE="
+        "home": "********",
+        "work": "********",
+        "Tante": "********"
       },
       "homebanking": {
-        "bank": "U2FsdGVkX1+7hbj5RIah9LXes8cr48Cm8YrqIrPgMfE=",
-        "creditcard": "U2FsdGVkX1+7hbj5RIah9LXes8cr48Cm8YrqIrPgMfE="
+        "bank": "********",
+        "creditcard": "********"
       }
   }
 }
