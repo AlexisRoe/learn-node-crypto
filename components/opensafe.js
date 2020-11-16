@@ -7,14 +7,7 @@ const { showPassword } = require('./ShowPassword');
 const { showMainMenu } = require('./MainMenu');
 const { askUser, confirm, showOptions } = require('../lib/askuser');
 const { encrypt } = require('../lib/crypto');
-const {
-    connect,
-    close: closeConnection,
-    find,
-    insertNewDocument,
-    changeDocument,
-    deleteDocument,
-} = require('../lib/database');
+const { find, insertNewDocument, changeDocument, deleteDocument } = require('../lib/database');
 
 async function passwordSafe() {
     const instruction = await showMainMenu();
@@ -22,9 +15,6 @@ async function passwordSafe() {
     if (instruction.exit) {
         return;
     }
-
-    console.log(chalk.grey('Connecting to database ...'));
-    await connect(process.env.DB_URL, process.env.DB_NAME);
 
     if (instruction.search) {
         const userSearch = await askUser(`What are you looking for?\n`);
@@ -57,7 +47,6 @@ async function passwordSafe() {
         console.log(chalk.green(`Password deleted`));
     }
 
-    closeConnection();
     if (await confirm('Next...')) {
         await passwordSafe();
     }
