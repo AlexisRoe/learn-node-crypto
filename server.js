@@ -14,7 +14,7 @@ const { encrypt, decryptPwd } = require('./lib/crypto');
 const { createPasswordList } = require('./lib/createlists');
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(express.json());
 
@@ -29,11 +29,11 @@ app.get('/password/:userquery', async (request, response) => {
 
     try {
         const documents = await find(process.env.DB_COLLECTION, query);
-        if (!documents) {
-            response.status(404).send('Could not specific password.');
+        if (documents.length === 0) {
+            response.status(404).send('Could not find passwords.');
             return;
         }
-        response.send(documents);
+        response.json(documents);
     } catch (err) {
         console.log(err);
         response.status(500).send('An internal server error occured.');
@@ -54,13 +54,12 @@ app.get('/password/id/:id', async (request, response) => {
             response.status(404).send('Could not specific password.');
             return;
         }
-        // tech demo
-        // const name = passwordDocument[0].name;
-        // const value = decryptPwd(passwordDocument[0].value,process.env.MASTER_PWD);
-        // const encryptedDocument = {
-        //     name,
-        //     value,
-        // };
+        const name = passwordDocument[0].name;
+        const value = decryptPwd(passwordDocument[0].value, process.env.MASTER_PWD);
+        const encryptedDocument = {
+            name,
+            value,
+        };
         response.send(encryptedDocument);
     } catch (err) {
         console.log(err);
