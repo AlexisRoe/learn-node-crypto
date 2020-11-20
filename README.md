@@ -93,35 +93,51 @@ to build a simple api and host a local server
 
 use the \_id/ new password to select document to change
 
+```js
     app.put('/password/?id=passwordID&password=newPassword',
+```
 
 code using query operators
 
-    app.post('/password/', async function (req, res) {
-        const newDocument = {};
-        newDocument.category = req.query.category;
-        newDocument.name = req.query.name;
-        const rawValue = req.query.password;
-        newDocument.value = encrypt(rawValue, process.env.MASTER_PWD);
-        await insertNewDocument(process.env.DB_COLLECTION, newDocument);
-        res.send('Got a POST request');
-    });
+```js
+app.post('/password/', async function (req, res) {
+    const newDocument = {};
+    newDocument.category = req.query.category;
+    newDocument.name = req.query.name;
+    const rawValue = req.query.password;
+    newDocument.value = encrypt(rawValue, process.env.MASTER_PWD);
+    await insertNewDocument(process.env.DB_COLLECTION, newDocument);
+    res.send('Got a POST request');
+});
+```
 
 changed to operation with request.body (JSON type based) & the body parser of express.js
 
+```js
     app.use(express.json())
     ...
     const password = request.body;
+```
 
 ### to delete document
 
 use the \_id to select document to delete
 
+```js
     {"_id":{"$oid":"5fb26eea2843faefa4d06b7a"}, ...
     app.delete('/password/:passwordID',
+```
 
 ### to insert new document
 
 use post method on the following path
 
     app.post('/password/?cat=category&name=name&value=password',
+
+## build on heroku
+
+```js
+const port = process.env.port || 3001;
+```
+
+## storybook

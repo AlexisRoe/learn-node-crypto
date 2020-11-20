@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { ObjectID } = require('mongodb');
 const express = require('express');
+const path = require('path');
 
 const {
     connect,
@@ -14,7 +15,7 @@ const { encrypt, decryptPwd } = require('./lib/crypto');
 const { createPasswordList } = require('./lib/createlists');
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 app.use(express.json());
 
@@ -164,6 +165,22 @@ app.delete('/password/:id', async (request, response) => {
         console.log(err);
         response.status(500).send('An internal server error occured.');
     }
+});
+
+// preparation build scripts
+// heroku necessary scripts in package.json
+// "build": "cd client && npm run build && npm run build-storybook",
+// "start": "node server.js",
+// "postinstall": "cd client && npm install"
+
+//  + ....
+
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+app.use('/storybook', express.static(path.join(__dirname, 'client/storybook-static')));
+
+app.get('*', (request, response) => {
+    response.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
 async function run() {

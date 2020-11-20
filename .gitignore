@@ -106,3 +106,5 @@ dist
 # own stuff
 .masterpwd
 db.json
+client/build
+client/storybook-static
