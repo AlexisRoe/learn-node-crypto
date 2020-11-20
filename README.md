@@ -134,10 +134,87 @@ use post method on the following path
 
     app.post('/password/?cat=category&name=name&value=password',
 
-## build on heroku
+## Nodemon & Concurrently
 
-```js
-const port = process.env.port || 3001;
+nodemon install
+
+```
+npm i --save-dev nodemon
+```
+
+using to automatically restart server.js and the react app
+
+```json
+"devDependencies": {
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server.js",
+```
+
+to only restart the server if the related code is changed
+
+nodemon.json
+
+```json
+{ "ignore": ["client/*"] }
 ```
 
 ## storybook
+
+install storybook inside the client folder
+
+```npm
+npx sb init
+```
+
+## deployment
+
+preperations for deployment
+
+changes in server.js
+
+```js
+const port = process.env.port || 3001;
+
+...
+
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+app.use('/storybook', express.static(path.join(__dirname, 'client/storybook-static')));
+
+app.get('*', (request, response) => {
+    response.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
+```
+
+ignoring the build folder in .gitignore
+
+```
+# own stuff
+.masterpwd
+db.json
+client/build
+client/storybook-static
+```
+
+write scripts for heroku deployment
+
+```json
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server.js",
+    "client": "cd client && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\" ",
+    "story": "cd client && npm run storybook",
+    "build": "cd client && npm run build && npm run build-storybook",
+    "start": "node server.js",
+    "postinstall": "cd client && npm install"
+  },
+```
+
+!!!! IMPORTANT SIDE NODE
+
+all dependency have to be in the right place, all necessary for production have to be in the regular dependencies

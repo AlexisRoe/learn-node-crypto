@@ -19,10 +19,6 @@ const port = process.env.PORT || 3001;
 
 app.use(express.json());
 
-app.get('/', async (request, response) => {
-    response.send('Hello World!');
-});
-
 app.get('/password/:userquery', async (request, response) => {
     const { userquery } = request.params;
     const regex = new RegExp(`.*${userquery}.*`, 'ig');
